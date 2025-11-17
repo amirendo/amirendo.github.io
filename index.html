@@ -2,347 +2,230 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Telegram API Panel</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مرکز ابزار تلگرام</title>
 <style>
     body {
-        background: #0d1117;
+        margin: 0;
+        background: #0d0d0d;
         color: #fff;
-        font-family: sans-serif;
+        font-family: Vazirmatn, sans-serif;
+    }
+    .tabs {
+        display: flex;
+        background: #111;
+        border-bottom: 2px solid #222;
+    }
+    .tab {
+        padding: 15px 20px;
+        cursor: pointer;
+        background: #111;
+        border-left: 1px solid #222;
+        transition: 0.2s;
+    }
+    .tab:hover {
+        background: #1a1a1a;
+    }
+    .tab.active {
+        background: #222;
+    }
+    .content {
+        display: none;
         padding: 20px;
+        animation: fade 0.3s;
     }
-    h2 {
-        color: #58a6ff;
+    .content.active {
+        display: block;
     }
-    .box {
-        background: #161b22;
-        padding: 20px;
-        border-radius: 12px;
-        margin-bottom: 25px;
-        border: 1px solid #30363d;
+    @keyframes fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
-    label {
-        font-weight: bold;
-    }
-    input, textarea, select {
+    input, textarea {
         width: 100%;
-        margin-top: 6px;
-        margin-bottom: 12px;
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        background: #0d1117;
+        padding: 12px;
+        border-radius: 10px;
+        background: #1a1a1a;
+        border: 1px solid #333;
         color: #fff;
-        border: 1px solid #30363d;
+        margin-bottom: 12px;
     }
     button {
-        background: #238636;
+        width: 100%;
+        padding: 14px;
         border: none;
-        padding: 12px 20px;
+        border-radius: 12px;
+        background: #4b87ff;
         color: white;
-        border-radius: 8px;
+        font-size: 17px;
         cursor: pointer;
-        font-size: 16px;
+        transition: 0.2s;
     }
     button:hover {
-        background: #2ea043;
+        background: #1e5fff;
     }
-    pre {
-        background: #000;
-        padding: 15px;
-        border-radius: 8px;
-        overflow-x: auto;
-        border: 1px solid #30363d;
+    .box {
+        background: #151515;
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 15px;
+        border: 1px solid #222;
     }
 </style>
 </head>
+
 <body>
 
-<h1>🎛 پنل ارسال درخواست به API</h1>
-<p>تمام مقادیر را وارد کنید و درخواست به صورت مستقیم ارسال می‌شود.</p>
-
-<hr><br>
-
-<!-- ------------------------
-  ارسال استوری با ربات
-------------------------- -->
-<div class="box">
-<h2>📸 ارسال استوری‌های تلگرام</h2>
-
-<label>URL سرور</label>
-<input id="url_stories" value="https://nonimitational-isodose-craig.ngrok-free.dev/bot/stories/send">
-
-<label>Target User</label>
-<input id="s_target_user">
-
-<label>Bot Token</label>
-<input id="s_bot_token">
-
-<label>Send To</label>
-<input id="s_send_to">
-
-<label>Stories Limit</label>
-<input id="s_limit" type="number" value="10">
-
-<label>Include Caption</label>
-<select id="s_include_caption">
-    <option value="true">True</option>
-    <option value="false">False</option>
-</select>
-
-<label>Custom Caption</label>
-<textarea id="s_caption"></textarea>
-
-<label>Parse Mode</label>
-<select id="s_parse">
-    <option value="HTML">HTML</option>
-    <option value="Markdown">Markdown</option>
-</select>
-
-<label>Button 1</label>
-<input id="s_btn1">
-
-<label>Button 2</label>
-<input id="s_btn2">
-
-<label>Button 3</label>
-<input id="s_btn3">
-
-<button onclick="sendStories()">ارسال درخواست</button>
-
-<pre id="out_stories"></pre>
+<div class="tabs">
+    <div class="tab active" onclick="openTab('stories')">ارسال استوری</div>
+    <div class="tab" onclick="openTab('profile')">ارسال پروفایل</div>
+    <div class="tab" onclick="openTab('userinfo')">ارسال اطلاعات کاربر</div>
+    <div class="tab" onclick="openTab('message')">ارسال پیام</div>
+    <div class="tab" onclick="openTab('file')">ارسال فایل</div>
 </div>
 
-<!-- ------------------------
-  ارسال پروفایل با ربات
-------------------------- -->
-<div class="box">
-<h2>👤 ارسال پروفایل کاربر</h2>
+<!-- ===================== تب ارسال استوری ===================== -->
+<div id="stories" class="content active box">
+    <h2>📸 ارسال استوری‌های تلگرام</h2>
 
-<label>URL سرور</label>
-<input id="url_profile" value="https://nonimitational-isodose-craig.ngrok-free.dev/bot/profile/send">
+    <input id="s_user" placeholder="یوزرنیم کاربر هدف (مثلاً @dope)">
+    <input id="s_token" placeholder="توکن ربات">
+    <input id="s_sendto" placeholder="ارسال به (آیدی عددی)">
+    <input id="s_limit" placeholder="تعداد استوری (مثلاً 10)">
+    <textarea id="s_caption" placeholder="کپشن سفارشی (HTML مجاز)"></textarea>
 
-<label>Target User</label>
-<input id="p_target_user">
-
-<label>Bot Token</label>
-<input id="p_bot_token">
-
-<label>Send To</label>
-<input id="p_send_to">
-
-<label>Include Info</label>
-<select id="p_include_info">
-    <option value="true">True</option>
-    <option value="false">False</option>
-</select>
-
-<label>Custom Caption</label>
-<textarea id="p_caption"></textarea>
-
-<label>Button 1</label>
-<input id="p_btn1">
-
-<label>Button 2</label>
-<input id="p_btn2">
-
-<label>Button 3</label>
-<input id="p_btn3">
-
-<button onclick="sendProfile()">ارسال درخواست</button>
-
-<pre id="out_profile"></pre>
+    <button onclick="sendStories()">ارسال استوری</button>
 </div>
 
-<!-- ------------------------
- ارسال بدون ربات
-------------------------- -->
-<div class="box">
-<h2>📨 ارسال اطلاعات کاربر بدون ربات</h2>
+<!-- ===================== تب پروفایل ===================== -->
+<div id="profile" class="content box">
+    <h2>👤 ارسال پروفایل کاربر</h2>
 
-<label>URL سرور</label>
-<input id="url_user" value="https://nonimitational-isodose-craig.ngrok-free.dev/user/send_info">
+    <input id="p_user" placeholder="یوزرنیم کاربر هدف">
+    <input id="p_token" placeholder="توکن ربات">
+    <input id="p_sendto" placeholder="ارسال به (آیدی عددی)">
+    <textarea id="p_caption" placeholder="کپشن سفارشی"></textarea>
 
-<label>Target User</label>
-<input id="u_target_user">
-
-<label>Send To</label>
-<input id="u_send_to">
-
-<label>Include Stories</label>
-<select id="u_include">
-    <option value="true">True</option>
-    <option value="false">False</option>
-</select>
-
-<label>Stories Limit</label>
-<input id="u_limit" type="number" value="8">
-
-<label>Output Path</label>
-<input id="u_path">
-
-<button onclick="sendUserInfo()">ارسال درخواست</button>
-
-<pre id="out_user"></pre>
+    <button onclick="sendProfile()">ارسال پروفایل</button>
 </div>
 
+<!-- ===================== تب ارسال اطلاعات کاربر ===================== -->
+<div id="userinfo" class="content box">
+    <h2>📨 ارسال اطلاعات کاربر به کاربر دیگر</h2>
 
-<!-- ------------------------
- پیام معمولی
-------------------------- -->
-<div class="box">
-<h2>💬 ارسال پیام HTML / Bold</h2>
+    <input id="u_user" placeholder="یوزرنیم کاربر هدف">
+    <input id="u_sendto" placeholder="ارسال به (یوزرنیم)">
+    <input id="u_limit" placeholder="تعداد استوری (مثلاً 8)">
+    <input id="u_path" placeholder="محل ذخیره فایل خروجی (اختیاری)">
 
-<label>URL سرور</label>
-<input id="url_msg" value="https://nonimitational-isodose-craig.ngrok-free.dev/messages/send">
-
-<label>Target</label>
-<input id="m_target">
-
-<label>Message</label>
-<textarea id="m_message"></textarea>
-
-<label>Parse Mode</label>
-<select id="m_parse">
-    <option value="HTML">HTML</option>
-    <option value="Markdown">Markdown</option>
-</select>
-
-<button onclick="sendMessage()">ارسال درخواست</button>
-
-<pre id="out_msg"></pre>
+    <button onclick="sendUserInfo()">ارسال اطلاعات</button>
 </div>
 
-<!-- ------------------------
- ارسال فایل
-------------------------- -->
-<div class="box">
-<h2>📁 ارسال فایل</h2>
+<!-- ===================== تب پیام ===================== -->
+<div id="message" class="content box">
+    <h2>💬 ارسال پیام HTML / بولد</h2>
 
-<label>URL سرور</label>
-<input id="url_file" value="https://nonimitational-isodose-craig.ngrok-free.dev/messages/send_file">
+    <input id="m_target" placeholder="هدف ارسال (آیدی عددی)">
+    <textarea id="m_message" placeholder="متن پیام (HTML مجاز)"></textarea>
 
-<label>Target</label>
-<input id="f_target">
-
-<label>File URL</label>
-<input id="f_file_url">
-
-<label>Caption</label>
-<textarea id="f_caption"></textarea>
-
-<label>Parse Mode</label>
-<select id="f_parse">
-    <option value="HTML">HTML</option>
-    <option value="Markdown">Markdown</option>
-</select>
-
-<label>File Name</label>
-<input id="f_file_name">
-
-<button onclick="sendFile()">ارسال درخواست</button>
-
-<pre id="out_file"></pre>
+    <button onclick="sendMessage()">ارسال پیام</button>
 </div>
+
+<!-- ===================== تب فایل ===================== -->
+<div id="file" class="content box">
+    <h2>📁 ارسال فایل به کاربر</h2>
+
+    <input id="f_target" placeholder="هدف ارسال (آیدی)">
+    <input id="f_url" placeholder="لینک فایل">
+    <input id="f_name" placeholder="نام فایل (مثلاً report.zip)">
+    <textarea id="f_caption" placeholder="کپشن (HTML مجاز)"></textarea>
+
+    <button onclick="sendFile()">ارسال فایل</button>
+</div>
+
 
 <script>
+function openTab(tabID) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
+
+    event.target.classList.add("active");
+    document.getElementById(tabID).classList.add("active");
+}
+
+/* ===== ارسال استوری ===== */
 function sendStories() {
-    const body = {
-        target_user: document.getElementById("s_target_user").value,
-        bot_token: document.getElementById("s_bot_token").value,
-        send_to: document.getElementById("s_send_to").value,
-        stories_limit: Number(document.getElementById("s_limit").value),
-        include_caption: document.getElementById("s_include_caption").value === "true",
-        custom_caption: document.getElementById("s_caption").value,
-        parse_mode: document.getElementById("s_parse").value,
-        button1: document.getElementById("s_btn1").value,
-        button2: document.getElementById("s_btn2").value,
-        button3: document.getElementById("s_btn3").value
-    };
-
-    fetch(document.getElementById("url_stories").value, {
+    fetch("https://nonimitational-isodose-craig.ngrok-free.dev/bot/stories/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    })
-    .then(r => r.text())
-    .then(t => document.getElementById("out_stories").textContent = t);
+        body: JSON.stringify({
+            target_user: document.getElementById("s_user").value,
+            bot_token: document.getElementById("s_token").value,
+            send_to: document.getElementById("s_sendto").value,
+            stories_limit: document.getElementById("s_limit").value,
+            include_caption: true,
+            custom_caption: document.getElementById("s_caption").value
+        })
+    }).then(r => alert("ارسال شد ✔")).catch(e => alert("خطا ❌"));
 }
 
+/* ===== ارسال پروفایل ===== */
 function sendProfile() {
-    const body = {
-        target_user: document.getElementById("p_target_user").value,
-        bot_token: document.getElementById("p_bot_token").value,
-        send_to: document.getElementById("p_send_to").value,
-        include_info: document.getElementById("p_include_info").value === "true",
-        custom_caption: document.getElementById("p_caption").value,
-        button1: document.getElementById("p_btn1").value,
-        button2: document.getElementById("p_btn2").value,
-        button3: document.getElementById("p_btn3").value
-    };
-
-    fetch(document.getElementById("url_profile").value, {
+    fetch("https://nonimitational-isodose-craig.ngrok-free.dev/bot/profile/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    })
-    .then(r => r.text())
-    .then(t => document.getElementById("out_profile").textContent = t);
+        body: JSON.stringify({
+            target_user: document.getElementById("p_user").value,
+            bot_token: document.getElementById("p_token").value,
+            send_to: document.getElementById("p_sendto").value,
+            custom_caption: document.getElementById("p_caption").value
+        })
+    }).then(r => alert("ارسال شد ✔")).catch(e => alert("خطا ❌"));
 }
 
+/* ===== ارسال اطلاعات کاربر ===== */
 function sendUserInfo() {
-    const body = {
-        target_user: document.getElementById("u_target_user").value,
-        send_to: document.getElementById("u_send_to").value,
-        include_stories: document.getElementById("u_include").value === "true",
-        stories_limit: Number(document.getElementById("u_limit").value),
-        output_path: document.getElementById("u_path").value
-    };
-
-    fetch(document.getElementById("url_user").value, {
+    fetch("https://nonimitational-isodose-craig.ngrok-free.dev/user/send_info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    })
-    .then(r => r.text())
-    .then(t => document.getElementById("out_user").textContent = t);
+        body: JSON.stringify({
+            target_user: document.getElementById("u_user").value,
+            send_to: document.getElementById("u_sendto").value,
+            include_stories: true,
+            stories_limit: document.getElementById("u_limit").value,
+            output_path: document.getElementById("u_path").value
+        })
+    }).then(r => alert("اطلاعات ارسال شد ✔")).catch(e => alert("خطا ❌"));
 }
 
+/* ===== ارسال پیام ===== */
 function sendMessage() {
-    const body = {
-        target: document.getElementById("m_target").value,
-        message: document.getElementById("m_message").value,
-        parse_mode: document.getElementById("m_parse").value
-    };
-
-    fetch(document.getElementById("url_msg").value, {
+    fetch("https://nonimitational-isodose-craig.ngrok-free.dev/messages/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    })
-    .then(r => r.text())
-    .then(t => document.getElementById("out_msg").textContent = t);
+        body: JSON.stringify({
+            target: document.getElementById("m_target").value,
+            message: document.getElementById("m_message").value,
+            parse_mode: "html"
+        })
+    }).then(r => alert("پیام ارسال شد ✔")).catch(e => alert("خطا ❌"));
 }
 
+/* ===== ارسال فایل ===== */
 function sendFile() {
-    const body = {
-        target: document.getElementById("f_target").value,
-        file_url: document.getElementById("f_file_url").value,
-        caption: document.getElementById("f_caption").value,
-        parse_mode: document.getElementById("f_parse").value,
-        file_name: document.getElementById("f_file_name").value
-    };
-
-    fetch(document.getElementById("url_file").value, {
+    fetch("https://nonimitational-isodose-craig.ngrok-free.dev/messages/send_file", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    })
-    .then(r => r.text())
-    .then(t => document.getElementById("out_file").textContent = t);
+        body: JSON.stringify({
+            target: document.getElementById("f_target").value,
+            file_url: document.getElementById("f_url").value,
+            caption: document.getElementById("f_caption").value,
+            parse_mode: "html",
+            file_name: document.getElementById("f_name").value
+        })
+    }).then(r => alert("فایل ارسال شد ✔")).catch(e => alert("خطا ❌"));
 }
+
 </script>
 
 </body>
 </html>
-
