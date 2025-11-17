@@ -1,1 +1,348 @@
-<h1>Hello from GitHub Pages!</h1>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Telegram API Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    body {
+        background: #0d1117;
+        color: #fff;
+        font-family: sans-serif;
+        padding: 20px;
+    }
+    h2 {
+        color: #58a6ff;
+    }
+    .box {
+        background: #161b22;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        border: 1px solid #30363d;
+    }
+    label {
+        font-weight: bold;
+    }
+    input, textarea, select {
+        width: 100%;
+        margin-top: 6px;
+        margin-bottom: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        background: #0d1117;
+        color: #fff;
+        border: 1px solid #30363d;
+    }
+    button {
+        background: #238636;
+        border: none;
+        padding: 12px 20px;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    button:hover {
+        background: #2ea043;
+    }
+    pre {
+        background: #000;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border: 1px solid #30363d;
+    }
+</style>
+</head>
+<body>
+
+<h1>🎛 پنل ارسال درخواست به API</h1>
+<p>تمام مقادیر را وارد کنید و درخواست به صورت مستقیم ارسال می‌شود.</p>
+
+<hr><br>
+
+<!-- ------------------------
+  ارسال استوری با ربات
+------------------------- -->
+<div class="box">
+<h2>📸 ارسال استوری‌های تلگرام</h2>
+
+<label>URL سرور</label>
+<input id="url_stories" value="https://nonimitational-isodose-craig.ngrok-free.dev/bot/stories/send">
+
+<label>Target User</label>
+<input id="s_target_user">
+
+<label>Bot Token</label>
+<input id="s_bot_token">
+
+<label>Send To</label>
+<input id="s_send_to">
+
+<label>Stories Limit</label>
+<input id="s_limit" type="number" value="10">
+
+<label>Include Caption</label>
+<select id="s_include_caption">
+    <option value="true">True</option>
+    <option value="false">False</option>
+</select>
+
+<label>Custom Caption</label>
+<textarea id="s_caption"></textarea>
+
+<label>Parse Mode</label>
+<select id="s_parse">
+    <option value="HTML">HTML</option>
+    <option value="Markdown">Markdown</option>
+</select>
+
+<label>Button 1</label>
+<input id="s_btn1">
+
+<label>Button 2</label>
+<input id="s_btn2">
+
+<label>Button 3</label>
+<input id="s_btn3">
+
+<button onclick="sendStories()">ارسال درخواست</button>
+
+<pre id="out_stories"></pre>
+</div>
+
+<!-- ------------------------
+  ارسال پروفایل با ربات
+------------------------- -->
+<div class="box">
+<h2>👤 ارسال پروفایل کاربر</h2>
+
+<label>URL سرور</label>
+<input id="url_profile" value="https://nonimitational-isodose-craig.ngrok-free.dev/bot/profile/send">
+
+<label>Target User</label>
+<input id="p_target_user">
+
+<label>Bot Token</label>
+<input id="p_bot_token">
+
+<label>Send To</label>
+<input id="p_send_to">
+
+<label>Include Info</label>
+<select id="p_include_info">
+    <option value="true">True</option>
+    <option value="false">False</option>
+</select>
+
+<label>Custom Caption</label>
+<textarea id="p_caption"></textarea>
+
+<label>Button 1</label>
+<input id="p_btn1">
+
+<label>Button 2</label>
+<input id="p_btn2">
+
+<label>Button 3</label>
+<input id="p_btn3">
+
+<button onclick="sendProfile()">ارسال درخواست</button>
+
+<pre id="out_profile"></pre>
+</div>
+
+<!-- ------------------------
+ ارسال بدون ربات
+------------------------- -->
+<div class="box">
+<h2>📨 ارسال اطلاعات کاربر بدون ربات</h2>
+
+<label>URL سرور</label>
+<input id="url_user" value="https://nonimitational-isodose-craig.ngrok-free.dev/user/send_info">
+
+<label>Target User</label>
+<input id="u_target_user">
+
+<label>Send To</label>
+<input id="u_send_to">
+
+<label>Include Stories</label>
+<select id="u_include">
+    <option value="true">True</option>
+    <option value="false">False</option>
+</select>
+
+<label>Stories Limit</label>
+<input id="u_limit" type="number" value="8">
+
+<label>Output Path</label>
+<input id="u_path">
+
+<button onclick="sendUserInfo()">ارسال درخواست</button>
+
+<pre id="out_user"></pre>
+</div>
+
+
+<!-- ------------------------
+ پیام معمولی
+------------------------- -->
+<div class="box">
+<h2>💬 ارسال پیام HTML / Bold</h2>
+
+<label>URL سرور</label>
+<input id="url_msg" value="https://nonimitational-isodose-craig.ngrok-free.dev/messages/send">
+
+<label>Target</label>
+<input id="m_target">
+
+<label>Message</label>
+<textarea id="m_message"></textarea>
+
+<label>Parse Mode</label>
+<select id="m_parse">
+    <option value="HTML">HTML</option>
+    <option value="Markdown">Markdown</option>
+</select>
+
+<button onclick="sendMessage()">ارسال درخواست</button>
+
+<pre id="out_msg"></pre>
+</div>
+
+<!-- ------------------------
+ ارسال فایل
+------------------------- -->
+<div class="box">
+<h2>📁 ارسال فایل</h2>
+
+<label>URL سرور</label>
+<input id="url_file" value="https://nonimitational-isodose-craig.ngrok-free.dev/messages/send_file">
+
+<label>Target</label>
+<input id="f_target">
+
+<label>File URL</label>
+<input id="f_file_url">
+
+<label>Caption</label>
+<textarea id="f_caption"></textarea>
+
+<label>Parse Mode</label>
+<select id="f_parse">
+    <option value="HTML">HTML</option>
+    <option value="Markdown">Markdown</option>
+</select>
+
+<label>File Name</label>
+<input id="f_file_name">
+
+<button onclick="sendFile()">ارسال درخواست</button>
+
+<pre id="out_file"></pre>
+</div>
+
+<script>
+function sendStories() {
+    const body = {
+        target_user: document.getElementById("s_target_user").value,
+        bot_token: document.getElementById("s_bot_token").value,
+        send_to: document.getElementById("s_send_to").value,
+        stories_limit: Number(document.getElementById("s_limit").value),
+        include_caption: document.getElementById("s_include_caption").value === "true",
+        custom_caption: document.getElementById("s_caption").value,
+        parse_mode: document.getElementById("s_parse").value,
+        button1: document.getElementById("s_btn1").value,
+        button2: document.getElementById("s_btn2").value,
+        button3: document.getElementById("s_btn3").value
+    };
+
+    fetch(document.getElementById("url_stories").value, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(r => r.text())
+    .then(t => document.getElementById("out_stories").textContent = t);
+}
+
+function sendProfile() {
+    const body = {
+        target_user: document.getElementById("p_target_user").value,
+        bot_token: document.getElementById("p_bot_token").value,
+        send_to: document.getElementById("p_send_to").value,
+        include_info: document.getElementById("p_include_info").value === "true",
+        custom_caption: document.getElementById("p_caption").value,
+        button1: document.getElementById("p_btn1").value,
+        button2: document.getElementById("p_btn2").value,
+        button3: document.getElementById("p_btn3").value
+    };
+
+    fetch(document.getElementById("url_profile").value, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(r => r.text())
+    .then(t => document.getElementById("out_profile").textContent = t);
+}
+
+function sendUserInfo() {
+    const body = {
+        target_user: document.getElementById("u_target_user").value,
+        send_to: document.getElementById("u_send_to").value,
+        include_stories: document.getElementById("u_include").value === "true",
+        stories_limit: Number(document.getElementById("u_limit").value),
+        output_path: document.getElementById("u_path").value
+    };
+
+    fetch(document.getElementById("url_user").value, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(r => r.text())
+    .then(t => document.getElementById("out_user").textContent = t);
+}
+
+function sendMessage() {
+    const body = {
+        target: document.getElementById("m_target").value,
+        message: document.getElementById("m_message").value,
+        parse_mode: document.getElementById("m_parse").value
+    };
+
+    fetch(document.getElementById("url_msg").value, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(r => r.text())
+    .then(t => document.getElementById("out_msg").textContent = t);
+}
+
+function sendFile() {
+    const body = {
+        target: document.getElementById("f_target").value,
+        file_url: document.getElementById("f_file_url").value,
+        caption: document.getElementById("f_caption").value,
+        parse_mode: document.getElementById("f_parse").value,
+        file_name: document.getElementById("f_file_name").value
+    };
+
+    fetch(document.getElementById("url_file").value, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(r => r.text())
+    .then(t => document.getElementById("out_file").textContent = t);
+}
+</script>
+
+</body>
+</html>
+
